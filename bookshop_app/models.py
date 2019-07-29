@@ -61,7 +61,7 @@ class Book(models.Model):
 class Book_entry(models.Model):
     book=models.ForeignKey(Book, default=1, on_delete = models.SET_DEFAULT)
     price=models.PositiveIntegerField(blank=True, null=True)
-    book_image=models.ImageField()
+    # book_image=models.ImageField()
     # cloudinary
     stock=models.PositiveIntegerField(blank=True, null=True)
 
