@@ -1,6 +1,7 @@
 from django.db import models
 import datetime
 from django.utils import timezone
+# from cloudinary.models import CloudinaryField
 
 # Create your models here.
 class Customer(models.Model):
@@ -35,7 +36,7 @@ class Payment_option(models.Model):
 
     card_type_choices=[(Visa, 'Visa'), (Mastercard, 'Mastercard'), (American_express, 'American_express'), (Pay_pal, 'Pay_pal')]
     customer=models.ForeignKey(Customer, default=1, on_delete = models.SET_DEFAULT)
-    card_type=models.CharField(max_length=200, choices=card_type_choices, default='VISA')
+    card_type=models.CharField(max_length=200, choices=card_type_choices, default='Visa')
     card_name=models.CharField(max_length=200)
     card_number=models.PositiveIntegerField(blank=True, null=True)
     expiry_date=models.DateTimeField(blank=True, null=True)
@@ -61,8 +62,6 @@ class Book(models.Model):
 class Book_entry(models.Model):
     book=models.ForeignKey(Book, default=1, on_delete = models.SET_DEFAULT)
     price=models.PositiveIntegerField(blank=True, null=True)
-    # book_image=models.ImageField()
-    # cloudinary
     stock=models.PositiveIntegerField(blank=True, null=True)
 
     # def add_to_basket():
@@ -71,7 +70,11 @@ class Book_entry(models.Model):
     # def create_review(): ????
 
 
-
+#
+# class Book_image(models.Model):
+#     book_entry=models.ForeignKey(Book_entry, default=1, on_delete = models.SET_DEFAULT)
+#     image_book = models.ImageField(blank=True, null=True)
+#     image_url = models.TextField(null=True,blank=True)
 
 
 class Line_items(models.Model):
@@ -102,7 +105,8 @@ class Order(models.Model):
 class Review(models.Model):
     customer=models.ForeignKey(Customer, default=1, on_delete = models.SET_DEFAULT)
     book_entry=models.ForeignKey(Book_entry, default=1, on_delete = models.SET_DEFAULT)
-    review=models.CharField(max_length=2000)
+    review=models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
     rating_count=models.IntegerField(blank=True, null=True)
 
     def __str__(self):
