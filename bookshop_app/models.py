@@ -68,10 +68,10 @@ class Book_entry(models.Model):
 
 
 
-# class Book_image(models.Model):
-#     book_entry=models.ForeignKey(Book_entry, default=1, on_delete = models.SET_DEFAULT)
-#     image_book = models.ImageField(blank=True, null=True)
-#     image_url = models.TextField(null=True,blank=True)
+class Book_image(models.Model):
+    book_entry=models.ForeignKey(Book_entry, default=1, on_delete = models.SET_DEFAULT)
+    image_book = models.ImageField(blank=True, null=True)
+    image_url = models.TextField(null=True,blank=True)
 
 
 class Basket(models.Model):
