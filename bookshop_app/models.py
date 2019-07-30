@@ -22,10 +22,9 @@ class Customer(models.Model):
 
 class Address(models.Model):
     customer=models.ForeignKey(Customer, default=1, on_delete = models.SET_DEFAULT)
-    house_number=models.PositiveSmallIntegerField(blank=True, null=True)
-    postcode=models.PositiveIntegerField(blank=True, null=True)
+    house_number=models.CharField(max_length=10,blank=True, null=True)
+    postcode=models.CharField(max_length=20, blank=True, null=True)
 
-    # should be a mixture of numbers and text but can't
 
 
 class Payment_option(models.Model):
@@ -51,7 +50,7 @@ class Book(models.Model):
     Hardback = "HB"
     Softback = "SB"
     cover_choices = [(Hardback, 'Hardback'), (Softback, 'Softback'),]
-    isbn=models.PositiveIntegerField(blank=True, null=True)
+    isbn=models.CharField(max_length=200, blank=True, null=True)
     book_name=models.CharField(max_length=200)
     cover=models.CharField(max_length=200, choices=cover_choices, default=Softback)
 
@@ -86,8 +85,12 @@ class Line_items(models.Model):
     basket=models.ForeignKey(Basket, default=1, on_delete = models.SET_DEFAULT)
 
     def total_price(self):
-        amount = book_entry.price * self.quantity
+        amount = self.book_entry.price * self.quantity
         return amount
+
+    def update_quantity(self, quantity):
+        self.quantity=quantity
+        self.save()
 
 
 
@@ -107,7 +110,6 @@ class Review(models.Model):
     customer=models.ForeignKey(Customer, default=1, on_delete = models.SET_DEFAULT)
     book_entry=models.ForeignKey(Book_entry, default=1, on_delete = models.SET_DEFAULT)
     review=models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
     rating_count=models.IntegerField(blank=True, null=True)
 
     def __str__(self):
