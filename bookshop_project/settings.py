@@ -11,16 +11,16 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-# import cloudinary
-# import cloudinary.uploader
-# import cloudinary.api
-#
-#
-# cloudinary.config(
-#   cloud_name = "dtadoffpu",
-#   api_key = "257426891233343",
-#   api_secret = "ZeNSz4E3LPLIcgvsrxzf1AhCmk8"
-# )
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+
+cloudinary.config(
+  cloud_name = "dtadoffpu",
+  api_key = "257426891233343",
+  api_secret = "ZeNSz4E3LPLIcgvsrxzf1AhCmk8"
+)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bookshop_app',
-    # 'cloudinary',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [

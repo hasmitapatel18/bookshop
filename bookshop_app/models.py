@@ -70,7 +70,7 @@ class Book_entry(models.Model):
     # def create_review(): ????
 
 
-#
+
 # class Book_image(models.Model):
 #     book_entry=models.ForeignKey(Book_entry, default=1, on_delete = models.SET_DEFAULT)
 #     image_book = models.ImageField(blank=True, null=True)
