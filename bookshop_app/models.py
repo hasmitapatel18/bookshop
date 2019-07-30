@@ -64,10 +64,8 @@ class Book_entry(models.Model):
     price=models.PositiveIntegerField(blank=True, null=True)
     stock=models.PositiveIntegerField(blank=True, null=True)
 
-    # def add_to_basket():
-    #
-    #
-    # def create_review(): ????
+    def add_to_basket(self):
+        pass
 
 
 
@@ -77,17 +75,23 @@ class Book_entry(models.Model):
 #     image_url = models.TextField(null=True,blank=True)
 
 
+class Basket(models.Model):
+    def empty_method(self):
+        return
+
 class Line_items(models.Model):
     book_entry=models.ForeignKey(Book_entry, default=1, on_delete = models.SET_DEFAULT)
     total_price=models.IntegerField(blank=True, null=True)
     quantity=models.IntegerField(blank=True, null=True)
+    basket=models.ForeignKey(Basket, default=1, on_delete = models.SET_DEFAULT)
 
-    # def update_quanyity():
+    def total_price(self):
+        amount = book_entry.price * self.quantity
+        return amount
 
 
 
-class Basket(models.Model):
-    line_items=models.ForeignKey(Line_items, default=1, on_delete = models.SET_DEFAULT)
+
 
 class Order(models.Model):
     customer=models.ForeignKey(Customer, default=1, on_delete = models.SET_DEFAULT)
@@ -96,9 +100,6 @@ class Order(models.Model):
     address=models.ForeignKey(Address, default=1, on_delete = models.SET_DEFAULT)
 
     # def pay():
-
-
-
 
 
 
