@@ -100,7 +100,7 @@ class Review(models.Model):
     customer=models.ForeignKey(Customer, default=1, on_delete = models.SET_DEFAULT)
     review=models.TextField()
     rating_count=models.IntegerField(blank=True, null=True)
-    timestamp = models.DateTimeField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return self.review
