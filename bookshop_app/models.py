@@ -55,28 +55,6 @@ class Payment_option(models.Model):
         return self.card_type
 
 
-class Order(models.Model):
-    customer=models.ForeignKey(Customer, default=1, on_delete = models.SET_DEFAULT)
-
-
-class Basket(models.Model):
-    order=models.OneToOneField(Order, primary_key=True, on_delete = models.SET_DEFAULT, default=1)
-
-
-class Line_items(models.Model):
-    basket=models.ForeignKey(Basket, default=1, on_delete = models.SET_DEFAULT)
-    total_price=models.IntegerField(blank=True, null=True)
-    quantity=models.IntegerField(blank=True, null=True)
-
-    def total_price(self):
-        amount = self.book_entry.price * self.quantity
-        return amount
-
-    def update_quantity(self, quantity):
-        self.quantity=quantity
-        self.save()
-
-
 class Author(models.Model):
     author_name=models.CharField(max_length=200)
 
@@ -107,19 +85,18 @@ class Review(models.Model):
         return self.review
 
     def reviewer_name(self):
-        return "%s by"% customer.username
+        return "by:" + " " + self.customer.username
 
 
 
 class Book_entry(models.Model):
-    line_items=models.OneToOneField(Line_items, primary_key=True, on_delete = models.SET_DEFAULT, default=1)
     book=models.ForeignKey(Book, default=1, on_delete = models.SET_DEFAULT)
     review=models.ForeignKey(Review, default=1, on_delete = models.SET_DEFAULT)
     price=models.PositiveIntegerField(blank=True, null=True)
     stock=models.PositiveIntegerField(blank=True, null=True)
 
     def add_to_basket(self):
-        basket = self.line_items.basket
+        basket = self.line_item.basket
         pass
 
     def create_review(self):
@@ -128,12 +105,39 @@ class Book_entry(models.Model):
 
     def if_in_stock(self):
         if self.stock > 0:
-            return str(self.stock) %" available%s"
+            return str(self.stock) + " " + "available"
         else:
             return "not in stock"
+
 
 
 class Book_image(models.Model):
     book_entry=models.ForeignKey(Book_entry, default=1, on_delete = models.SET_DEFAULT)
     image_book = models.ImageField(blank=True, null=True)
     image_url = models.TextField(null=True,blank=True)
+
+
+
+
+class Order(models.Model):
+    customer=models.ForeignKey(Customer, default=1, on_delete = models.SET_DEFAULT)
+
+
+class Basket(models.Model):
+    order=models.OneToOneField(Order, primary_key=True, on_delete = models.SET_DEFAULT, default=1)
+
+
+
+class Line_items(models.Model):
+    book_entry=models.OneToOneField(Book_entry, primary_key=True, on_delete = models.SET_DEFAULT, default=1)
+    basket=models.ForeignKey(Basket, default=1, on_delete = models.SET_DEFAULT)
+    total_price=models.IntegerField(blank=True, null=True)
+    quantity=models.IntegerField(blank=True, null=True)
+
+    def total_price(self):
+        amount = self.book_entry.price * self.quantity
+        return amount
+
+    def update_quantity(self, quantity):
+        self.quantity=quantity
+        self.save()
