@@ -8,21 +8,22 @@ from django.urls import reverse
 
 
 class Customer(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, on_delete = models.SET_DEFAULT)
+    first_name = models.CharField(max_length=200, blank=True, null=True)
+    last_name = models.CharField(max_length=200, blank=True, null=True)
+    username = models.CharField(max_length=200, blank=True, null=True)
+    password = models.CharField(max_length=200, blank=True, null=True)
+    email_address = models.EmailField(max_length=200, blank=True, null=True)
     age = models.PositiveSmallIntegerField(blank=True, null=True)
     marketing_consent=models.BooleanField(default=False)
 
-    def customer_name(self):
-        full_name = self.user.get_full_name()
-        return full_name
-
-    def email(self):
-        return user.email
+    def __str__(self):
+        return self.first_name
 
     def revoke_marketing_consent(self):
         self.marketing_consent=False
         self.save()
         return "email notification sent"
+
 
 
 class Address(models.Model):
@@ -106,7 +107,7 @@ class Review(models.Model):
         return self.review
 
     def reviewer_name(self):
-        return "%s by"% customer.customer_name()
+        return "%s by"% customer.username
 
 
 
