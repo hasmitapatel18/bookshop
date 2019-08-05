@@ -1,26 +1,35 @@
-from django.test import TestCase
-
+from django.test import TestCase, RequestFactory
+from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth import get_user_model
 # Create your tests here.
 from bookshop_app.models import *
 
-class CustomerTestCase(TestCase):
 
+
+class CustomerTestCase(TestCase):
     def setUp(self):
-        self.c = Customer.objects.create(first_name='peter', last_name='smith', username='psmith', password='foo', age=23, email_address='ps@hotmail.com', marketing_consent=True)
+        self.u1 = User.objects.create_user(first_name='peter', last_name='smith', username='petersmith', email='petersmith@hotmail.com')
+        self.c1 = Customer.objects.create(user=self.u1, age=23, marketing_consent=True)
+
+    def test_customer_name(self):
+        """test customer_name method"""
+        peter = Customer.objects.get(user=self.u1)
+        self.assertEqual(peter.customer_name(), 'peter smith')
+
 
     def test_customer_has_email_address(self):
         """customer has email address"""
-        peter = Customer.objects.get(email_address="ps@hotmail.com")
-        self.assertEqual(peter.email_address, 'ps@hotmail.com')
+        peter = Customer.objects.get(user=self.u1)
+        self.assertEqual(peter.user.email, 'petersmith@hotmail.com')
 
     def test_return_string(self):
-        """return string a"""
-        peter = Customer.objects.get(email_address="ps@hotmail.com")
+        """return string- email notification"""
+        peter = Customer.objects.get(user=self.u1)
         self.assertEqual(peter.revoke_marketing_consent(), 'email notification sent')
 
     def test_revoke_marketing_consent(self):
-        """return string a"""
-        peter = Customer.objects.get(email_address="ps@hotmail.com")
+        """test marketing consent set to false"""
+        peter = Customer.objects.get(user=self.u1)
         peter.revoke_marketing_consent()
         self.assertEqual(peter.marketing_consent, False)
 
@@ -28,17 +37,19 @@ class CustomerTestCase(TestCase):
 class ReviewTestCase(TestCase):
 
     def setUp(self):
-        peter_c = Customer.objects.create(first_name='peter', last_name='smith', username='psmith', password='foo', age=23, email_address='ps@hotmail.com', marketing_consent=True)
+        u1 = User.objects.create_user(first_name='peter', last_name='smith', username='petersmith', email='petersmith@hotmail.com')
+        peter_c = Customer.objects.create(user=u1, age=23, marketing_consent=True)
         self.rev = Review.objects.create(customer=peter_c)
 
     def test_reviewer_name(self):
         """return name of reviewer using review_name method"""
-        self.assertEqual(self.rev.reviewer_name(), 'by: psmith')
+        self.assertEqual(self.rev.reviewer_name(), 'by: peter smith')
 
 
-class BookentryTestCase(TestCase):
+class BookEntryTestCase(TestCase):
     def setUp(self):
-        peter_c = Customer.objects.create(first_name='peter', last_name='smith', username='psmith', password='foo', age=23, email_address='ps@hotmail.com', marketing_consent=True)
+        u1 = User.objects.create_user(first_name='peter', last_name='smith', username='petersmith', email='petersmith@hotmail.com')
+        peter_c = Customer.objects.create(user=u1, age=23, marketing_consent=True)
         a1 = Author.objects.create(author_name="Shakespeare")
         r1 = Review.objects.create(customer= peter_c)
         b1= Book.objects.create(cover="Hardback", isbn="abc", book_name="book1", author = a1)
@@ -49,13 +60,14 @@ class BookentryTestCase(TestCase):
         self.assertEqual(self.be1.if_in_stock(), "10 available" )
 
     # def test_if_in_stock(self):
-    #     """if stock is not available"""
+    #     """if stock=0 -is not available"""
     #     self.assertEqual(self.be1.if_in_stock(), "not in stock" )
 
 
-class Line_itemsTestCase(TestCase):
+class LineItemsTestCase(TestCase):
     def setUp(self):
-        peter_c = Customer.objects.create(first_name='peter', last_name='smith', username='psmith', password='foo', age=23, email_address='ps@hotmail.com', marketing_consent=True)
+        u1 = User.objects.create_user(first_name='peter', last_name='smith', username='petersmith', email='petersmith@hotmail.com')
+        peter_c = Customer.objects.create(user=u1, age=23, marketing_consent=True)
         a1 = Author.objects.create(author_name="Shakespeare")
         r1 = Review.objects.create(customer= peter_c)
         b1= Book.objects.create(cover="Hardback", isbn="abc", book_name="book1", author = a1)
