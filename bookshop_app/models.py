@@ -75,6 +75,23 @@ class Book(models.Model):
 
 
 
+
+class Review(models.Model):
+    customer=models.ForeignKey(Customer, default=1, on_delete = models.SET_DEFAULT)
+    book=models.ForeignKey(Book, default=1, on_delete = models.SET_DEFAULT)
+    review=models.TextField()
+    rating_count=models.IntegerField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return self.review
+
+    def reviewer_name(self):
+        return "by:" + " " + self.customer.customer_name()
+
+
+
+
 class Book_entry(models.Model):
     book=models.ForeignKey(Book, default=1, on_delete = models.SET_DEFAULT)
     price=models.PositiveIntegerField(blank=True, null=True)
@@ -94,21 +111,6 @@ class Book_entry(models.Model):
         else:
             return "not in stock"
 
-
-
-
-class Review(models.Model):
-    customer=models.ForeignKey(Customer, default=1, on_delete = models.SET_DEFAULT)
-    book_entry=models.ForeignKey(Book_entry, default=1, on_delete = models.SET_DEFAULT)
-    review=models.TextField()
-    rating_count=models.IntegerField(blank=True, null=True)
-    timestamp = models.DateTimeField(auto_now_add=True, null=True)
-
-    def __str__(self):
-        return self.review
-
-    def reviewer_name(self):
-        return "by:" + " " + self.customer.customer_name()
 
 
 

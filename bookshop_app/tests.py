@@ -34,22 +34,6 @@ class CustomerTestCase(TestCase):
         self.assertEqual(peter.marketing_consent, False)
 
 
-class BookEntryTestCase(TestCase):
-    def setUp(self):
-        u1 = User.objects.create_user(first_name='peter', last_name='smith', username='petersmith', email='petersmith@hotmail.com')
-        peter_c = Customer.objects.create(user=u1, age=23, marketing_consent=True)
-        a1 = Author.objects.create(author_name="Shakespeare")
-        b1= Book.objects.create(cover="Hardback", isbn="abc", book_name="book1", author = a1)
-        self.be1 = Book_entry.objects.create(book=b1, price=1299, stock=10)
-
-    def test_if_in_stock(self):
-        """check if in stock method, if stock is more than 0"""
-        self.assertEqual(self.be1.if_in_stock(), "10 available" )
-
-#     # def test_if_in_stock(self):
-#     #     """if stock=0 -is not available"""
-#     #     self.assertEqual(self.be1.if_in_stock(), "not in stock" )
-
 
 
 class ReviewTestCase(TestCase):
@@ -59,12 +43,29 @@ class ReviewTestCase(TestCase):
         peter_c = Customer.objects.create(user=u1, age=23, marketing_consent=True)
         a1 = Author.objects.create(author_name="Shakespeare")
         b1= Book.objects.create(cover="Hardback", isbn="abc", book_name="book1", author = a1)
-        be1 = Book_entry.objects.create(book=b1, price=1299, stock=10)
-        self.rev = Review.objects.create(customer=peter_c, book_entry=be1)
+        self.rev = Review.objects.create(customer=peter_c, book=b1)
 
     def test_reviewer_name(self):
         """return name of reviewer using review_name method"""
         self.assertEqual(self.rev.reviewer_name(), 'by: peter smith')
+
+
+
+    class BookEntryTestCase(TestCase):
+        def setUp(self):
+            u1 = User.objects.create_user(first_name='peter', last_name='smith', username='petersmith', email='petersmith@hotmail.com')
+            peter_c = Customer.objects.create(user=u1, age=23, marketing_consent=True)
+            a1 = Author.objects.create(author_name="Shakespeare")
+            b1= Book.objects.create(cover="Hardback", isbn="abc", book_name="book1", author = a1)
+            self.be1 = Book_entry.objects.create(book=b1, price=1299, stock=10)
+
+        def test_if_in_stock(self):
+            """check if in stock method, if stock is more than 0"""
+            self.assertEqual(self.be1.if_in_stock(), "10 available" )
+
+    #     # def test_if_in_stock(self):
+    #     #     """if stock=0 -is not available"""
+    #     #     self.assertEqual(self.be1.if_in_stock(), "not in stock" )
 
 
 
@@ -75,7 +76,7 @@ class LineItemsTestCase(TestCase):
         a1 = Author.objects.create(author_name="Shakespeare")
         b1= Book.objects.create(cover="Hardback", isbn="abc", book_name="book1", author = a1)
         be1 = Book_entry.objects.create(book=b1, price=1299, stock=10)
-        r1 = Review.objects.create(customer= peter_c, book_entry=be1)
+        r1 = Review.objects.create(customer= peter_c, book=b1)
         o1=Order.objects.create(customer=peter_c)
         basket1=Basket.objects.create(order=o1)
         self.line_item = Line_items.objects.create(book_entry=be1, quantity=10, basket=basket1)

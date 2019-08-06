@@ -25,12 +25,12 @@ class BookAdmin(admin.ModelAdmin):
     fields = [("author", "isbn", "book_name", "cover", "synopsis")]
 
 
+class ReviewAdmin(admin.ModelAdmin):
+    fields = [("customer", "book", "review", "rating_count", "timestamp")]
+
+
 class Book_entryAdmin(admin.ModelAdmin):
     fields = [("book", "price", "stock")]
-
-
-class ReviewAdmin(admin.ModelAdmin):
-    fields = [("customer", "book_entry", "review", "rating_count", "timestamp")]
 
 
 class Book_imageAdmin(admin.ModelAdmin):
@@ -55,8 +55,8 @@ admin.site.register(Address)
 admin.site.register(Payment_option)
 admin.site.register(Author)
 admin.site.register(Book)
-admin.site.register(Book_entry)
 admin.site.register(Review)
+admin.site.register(Book_entry)
 admin.site.register(Book_image)
 admin.site.register(Order)
 admin.site.register(Basket)
