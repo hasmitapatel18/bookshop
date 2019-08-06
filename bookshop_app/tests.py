@@ -90,3 +90,37 @@ class LineItemsTestCase(TestCase):
         """check update quantity method"""
         self.line_item.update_quantity(9)
         self.assertEqual(self.line_item.quantity, 9)
+
+
+class BasketTestCase(TestCase):
+    def setUp(self):
+        u1 = User.objects.create_user(first_name='peter', last_name='smith', username='petersmith', email='petersmith@hotmail.com')
+        peter_c = Customer.objects.create(user=u1, age=23, marketing_consent=True)
+        a1 = Author.objects.create(author_name="Shakespeare")
+        b1= Book.objects.create(cover="Hardback", isbn="abc", book_name="book1", author = a1)
+        be1 = Book_entry.objects.create(book=b1, price=1299, stock=10)
+        r1 = Review.objects.create(customer= peter_c, book=b1)
+
+        a2 = Author.objects.create(author_name="Arthur Conan Doyle")
+        b2= Book.objects.create(cover="Hardback", isbn="abc", book_name="book2", author = a2)
+        be2 = Book_entry.objects.create(book=b2, price=3000, stock=15)
+        r2 = Review.objects.create(customer= peter_c, book=b2)
+
+        self.customer=peter_c
+        self.basket1=Basket.objects.create()
+        line_item = Line_items.objects.create(book_entry=be1, quantity=2, basket=self.basket1)
+        line_item2 = Line_items.objects.create(book_entry=be2, quantity=1, basket=self.basket1)
+
+    def test_create_order(self):
+        """check order created"""
+        self.basket1.purchase(self.customer)
+        self.assertIsNotNone(self.basket1.order)
+
+    def test_line_items_found(self):
+        """check line_items_found from order"""
+        self.basket1.purchase(self.customer)
+        order=self.basket1.order
+        # import pdb
+        # pdb.set_trace()
+        # we use <model_name>_set to reverse back through the fk (if not specified)
+        self.assertEqual(order.basket_set.first().line_items_set.count(), 2)
