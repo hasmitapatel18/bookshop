@@ -39,3 +39,12 @@ class RegisterView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'bookshop_app/register.html'
+
+
+class BookListView(ListView):
+    template_name = 'bookshop_app/book_list.html'
+    context_object_name='books'
+    model=Book_entry
+
+    def get_queryset(self):
+        return Book_entry.objects.all()

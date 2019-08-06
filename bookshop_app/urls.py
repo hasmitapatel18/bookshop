@@ -5,7 +5,7 @@ from bookshop_app.views import *
 
 
 urlpatterns = [
-    # path('', FilmListView.as_view(), name='film_list'),
+    path('', BookListView.as_view(), name='book_list'),
     path('register/', views.RegisterView.as_view(), name='register'),
 
 
